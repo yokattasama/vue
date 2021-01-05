@@ -4,10 +4,12 @@ export const emptyObject = Object.freeze({})
 
 // These helpers produce better VM code in JS engines due to their
 // explicitness and function inlining.
+// 判断是否是未定义的
 export function isUndef (v: any): boolean %checks {
   return v === undefined || v === null
 }
 
+// 判断是否是已经定义的
 export function isDef (v: any): boolean %checks {
   return v !== undefined && v !== null
 }
@@ -23,6 +25,7 @@ export function isFalse (v: any): boolean %checks {
 /**
  * Check if value is primitive.
  */
+// 是否是基本类型
 export function isPrimitive (value: any): boolean %checks {
   return (
     typeof value === 'string' ||
@@ -38,6 +41,7 @@ export function isPrimitive (value: any): boolean %checks {
  * Objects from primitive values when we know the value
  * is a JSON-compliant type.
  */
+// 是否是引用类型
 export function isObject (obj: mixed): boolean %checks {
   return obj !== null && typeof obj === 'object'
 }

@@ -44,22 +44,33 @@ function normalizeArrayChildren (children: any, nestedIndex?: string): Array<VNo
   const res = []
   let i, c, lastIndex, last
   for (i = 0; i < children.length; i++) {
+    // 当前元素
     c = children[i]
+    // 若当前元素未定义或为布尔值 则跳出循环执行下一次
     if (isUndef(c) || typeof c === 'boolean') continue
+    // 待返回的最后一个元素的索引
     lastIndex = res.length - 1
+    // 待返回的最后一个元素
     last = res[lastIndex]
+    // 如果当前元素是一个数组
     //  nested
     if (Array.isArray(c)) {
+      // 如果当前元素的长度大于零，递归调用自身
       if (c.length > 0) {
         c = normalizeArrayChildren(c, `${nestedIndex || ''}_${i}`)
         // merge adjacent text nodes
+        // 如果此元素第一个子元素是文本节点并且待返回最后一个元素也是文本节点
         if (isTextNode(c[0]) && isTextNode(last)) {
           res[lastIndex] = createTextVNode(last.text + (c[0]: any).text)
+          // 删除此元素第一个子元素
           c.shift()
         }
+        // 把c的  <del>内容<del> 放入 待返回数组中
         res.push.apply(res, c)
       }
     } else if (isPrimitive(c)) {
+       // 如果当前元素是基本类型
+      // 如果待返回的最后一个元素是文本节点
       if (isTextNode(last)) {
         // merge adjacent text nodes
         // this is necessary for SSR hydration because text nodes are
@@ -70,6 +81,7 @@ function normalizeArrayChildren (children: any, nestedIndex?: string): Array<VNo
         res.push(createTextVNode(c))
       }
     } else {
+      // 如果当前元素不是数组也不是基本类型
       if (isTextNode(c) && isTextNode(last)) {
         // merge adjacent text nodes
         res[lastIndex] = createTextVNode(last.text + c.text)

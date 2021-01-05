@@ -55,6 +55,8 @@ export function initLifecycle (vm: Component) {
   vm._isBeingDestroyed = false
 }
 
+
+// 在 core/index.js 中初次执行，挂载 $_update 方法
 export function lifecycleMixin (Vue: Class<Component>) {
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
@@ -138,12 +140,14 @@ export function lifecycleMixin (Vue: Class<Component>) {
   }
 }
 
+// runtime/index.js $mount 方法最后调用了此方法
 export function mountComponent (
   vm: Component,
   el: ?Element,
   hydrating?: boolean
 ): Component {
   vm.$el = el
+    // 当未传入渲染函数时发出提醒
   if (!vm.$options.render) {
     vm.$options.render = createEmptyVNode
     if (process.env.NODE_ENV !== 'production') {
@@ -186,7 +190,9 @@ export function mountComponent (
       measure(`vue ${name} patch`, startTag, endTag)
     }
   } else {
+    // 将元素挂载到页面上 更新到页面上
     updateComponent = () => {
+       // 执行此函数需要一个 VNode ， vm._render方法 返回一个VNode
       vm._update(vm._render(), hydrating)
     }
   }
